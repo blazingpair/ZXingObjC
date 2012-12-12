@@ -645,20 +645,11 @@ ZXAV(didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer)
 }
 
 - (void)setTorch:(BOOL)torch_ {
-  (void)torch_;
-  ZXAV({
-      [input.device lockForConfiguration:nil];
-      switch(input.device.torchMode) {
-      case AVCaptureTorchModeOff:
-      case AVCaptureTorchModeAuto:
-      default:
-        input.device.torchMode = AVCaptureTorchModeOn;
-        break;
-      case AVCaptureTorchModeOn:
-        input.device.torchMode = AVCaptureTorchModeOff;
-        break;
-      }
-      [input.device unlockForConfiguration];
+    torch = torch_;
+    ZXAV({
+        [input.device lockForConfiguration:nil];
+        input.device.torchMode = torch ? AVCaptureTorchModeOn : AVCaptureTorchModeOff;
+        [input.device unlockForConfiguration];
     });
 }
 
