@@ -648,7 +648,10 @@ ZXAV(didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer)
     torch = torch_;
     ZXAV({
         [input.device lockForConfiguration:nil];
-        input.device.torchMode = torch ? AVCaptureTorchModeOn : AVCaptureTorchModeOff;
+        AVCaptureTorchMode mode = torch ? AVCaptureTorchModeOn : AVCaptureTorchModeOff;
+        if ([input.device hasTorch] && [input.device isTorchModeSupported:mode]) {
+            input.device.torchMode = mode;
+        }
         [input.device unlockForConfiguration];
     });
 }
